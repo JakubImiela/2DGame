@@ -8,7 +8,7 @@ public class Player : MonoBehaviour
 {
 
     //debug
-
+    [SerializeField] private bool onground;
     //references
     private Ladder ladder;
     [SerializeField] private RopeSystem ropeSystem;
@@ -55,6 +55,7 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        onground = isGrounded();
         if (verticalInput != 0)
         {
             checkLadder(verticalInput);

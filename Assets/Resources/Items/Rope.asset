@@ -12,8 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b070dbf2c5e43d4795c73403b985852, type: 3}
   m_Name: Rope
   m_EditorClassIdentifier: 
-  itemName: 
-  itemDescription: 
-  itemCost: 0
+  itemName: Rope
+  itemDescription: Jeronimo!
+  itemCost: 500
   openDoor: 0
-  itemSprite: {fileID: 0}
+  itemSprite: {fileID: 21300000, guid: f13c9dfc2078d2f4183ed23bb9ca784c, type: 3}
+  enableRope: 1
