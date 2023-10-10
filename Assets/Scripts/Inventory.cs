@@ -4,65 +4,61 @@ using UnityEngine.UI;
 
 public class Inventory : Singleton<Inventory>
 {
-    private List<Item> items = new(4);
-
-    private List<GameObject> itemFrames = new(4);
-
-    private GameObject selectedFrame;
-    private Item selectedItem = null;
-
-    private int currentlySelected = 0;
+    [SerializeField] private List<Item> items = new();
+    [SerializeField] private ItemSlot[] itemSlots;
+    [SerializeField] private Item selectedItem = null;
+    [SerializeField] private Transform inventoryBar;
+    [SerializeField] private RopeSystem RopeSystem;
+    private const int maxItemCount = 4;
 
     private void Start()
     {
-
-        itemFrames.Add(transform.Find("ItemFrame01").gameObject);
-        itemFrames.Add(transform.Find("ItemFrame02").gameObject);
-        itemFrames.Add(transform.Find("ItemFrame03").gameObject);
-        itemFrames.Add(transform.Find("ItemFrame04").gameObject);
-
-
+        if (inventoryBar != null)
+        itemSlots = inventoryBar.GetComponentsInChildren<ItemSlot>();
     }
-    public void addItem(Item item)
+    public bool addItem(Item item)
     {
-        items.Add(item);
-        updateInventory();
+        bool itemAdded;
+        if (items.Count >= maxItemCount)
+        {
+            Debug.Log("inventory is full");
+            itemAdded = false;
+        }
+        else
+        {
+            items.Add(item);
+            updateInventory();
+            itemAdded = true;
+        }
+        return itemAdded;
     }
     private void updateInventory()
     {
         for (int i = 0; i < items.Count; i++)
         {
-            itemFrames[i].GetComponent<Image>().sprite = items[i].itemSprite;
-
+            itemSlots[i].item = items[i];
         }
-
-        if (items.Count >= currentlySelected && currentlySelected != 0)
-            selectedItem = items[currentlySelected - 1];
-        else
-            selectedItem = null;
-
 
     }
 
     public void switchHeldItem(int itemSlot)
     {
         resetSelectionFrames();
-        selectedFrame = itemFrames[itemSlot - 1].transform.Find("selectedFrame").gameObject;
-        selectedFrame.GetComponent<Image>().enabled = true;
-        currentlySelected = itemSlot;
-
-        if (items.Count >= itemSlot)
-            selectedItem = items[itemSlot - 1];
+        itemSlots[itemSlot].selectionFrame.enabled = true;
+        selectedItem = itemSlots[itemSlot].item;
+        if (selectedItem && selectedItem.enableRope == true)
+            RopeSystem.enabled = true;
         else 
-            selectedItem = null;
+            RopeSystem.enabled = false;
+
     }
 
     private void resetSelectionFrames()
     {
-        itemFrames[0].transform.Find("selectedFrame").gameObject.GetComponent<Image>().enabled = false;
-        itemFrames[1].transform.Find("selectedFrame").gameObject.GetComponent<Image>().enabled = false;
-        itemFrames[2].transform.Find("selectedFrame").gameObject.GetComponent<Image>().enabled = false;
-        itemFrames[3].transform.Find("selectedFrame").gameObject.GetComponent<Image>().enabled = false;
+        foreach(ItemSlot itemSlot in itemSlots)
+        {
+            itemSlot.selectionFrame.enabled = false;
+        }
     }
 
     public Item getSelectedItem()

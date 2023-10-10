@@ -257,4 +257,15 @@ public class RopeSystem : MonoBehaviour
         ropeJoint.distance = calculateRopeRemainingDistance();
     }
 
+    private void OnDisable()
+    {
+        ResetRope();
+        crosshairSprite.enabled = false;
+    }
+
+    private void OnEnable()
+    {
+        crosshairSprite.enabled = true;
+    }
+
 }

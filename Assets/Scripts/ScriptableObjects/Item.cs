@@ -9,5 +9,6 @@ public class Item : ScriptableObject
     public int itemCost;
     public bool openDoor;
     public Sprite itemSprite;
+    public bool enableRope;
     
 }

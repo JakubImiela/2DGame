@@ -55,7 +55,6 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
         if (verticalInput != 0)
         {
             checkLadder(verticalInput);
@@ -123,22 +122,22 @@ public class Player : MonoBehaviour
 
         if (inventoryOneKeyWasPressed)
         {
-            Inventory.instance.switchHeldItem(1);
+            Inventory.instance.switchHeldItem(0);
             inventoryOneKeyWasPressed = false;
         }
         if (inventoryTwoKeyWasPressed)
         {
-            Inventory.instance.switchHeldItem(2);
+            Inventory.instance.switchHeldItem(1);
             inventoryTwoKeyWasPressed = false;
         }
         if (inventoryThreeKeyWasPressed)
         {
-            Inventory.instance.switchHeldItem(3);
+            Inventory.instance.switchHeldItem(2);
             inventoryThreeKeyWasPressed = false;
         }
         if (inventoryFourKeyWasPressed)
         {
-            Inventory.instance.switchHeldItem(4);
+            Inventory.instance.switchHeldItem(3);
             inventoryFourKeyWasPressed = false;
         }
 
@@ -178,12 +177,13 @@ public class Player : MonoBehaviour
    
         if (!isGrounded())
         {
+            jumpKeyWasPressed = false;
             return;
         }
 
         if (jumpKeyWasPressed)
         {
-            rigidbodyComponent.AddForce(Vector2.up * 20, ForceMode2D.Impulse);
+            rigidbodyComponent.velocity = new Vector2(rigidbodyComponent.velocity.x, 6f);
             jumpKeyWasPressed = false;
         }
 
