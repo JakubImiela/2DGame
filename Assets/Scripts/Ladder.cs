@@ -4,13 +4,25 @@ using UnityEngine;
 
 public class Ladder : MonoBehaviour
 {
-    public Vector2 lowPosition; 
-    public Vector2 topPosition;
+    [HideInInspector] public Vector2 lowPosition;
+    [HideInInspector] public Vector2 topPosition;
+    [SerializeField] private Transform topTransform;
+    [SerializeField] private Transform midTransform;
+    [SerializeField] private Transform botTransform;
+    [SerializeField] private Transform topCollisionTransform;
     [SerializeField] private BoxCollider2D topCollision = null;
 
     private void Reset()
     {
         GetComponent<BoxCollider2D>().isTrigger = true;
+    }
+
+    private void OnValidate()
+    {
+        topTransform.localPosition = new Vector2(0f, +(midTransform.GetComponent<SpriteRenderer>().size.y/2 + 0.32f));
+        midTransform.localPosition = new Vector2(0f, 0f);
+        botTransform.localPosition = new Vector2(0f, -(midTransform.GetComponent<SpriteRenderer>().size.y/2 + 0.32f));
+        topCollisionTransform.localPosition = new Vector2(0f, midTransform.GetComponent<SpriteRenderer>().size.y / 2 + 0.48f);
     }
 
     private void Start()
