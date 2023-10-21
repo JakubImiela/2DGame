@@ -267,7 +267,7 @@ public class Player : MonoBehaviour
         transform.GetComponent<SpriteRenderer>().flipX = false;
         frontCheckTransform.localPosition = new Vector2(0.5f, 0f);
         ropeAttachmentPointTransform.localPosition = new Vector2(0.17f, 0.25f);
-        heldItemTransform.localPosition = new Vector2(0.065f, -0.005f);
+
     }
 
     public void turnLeft()
@@ -275,7 +275,7 @@ public class Player : MonoBehaviour
         transform.GetComponent<SpriteRenderer>().flipX = true;
         frontCheckTransform.transform.localPosition = new Vector2(-0.5f, 0f);
         ropeAttachmentPointTransform.localPosition = new Vector2(-0.17f, 0.25f);
-        heldItemTransform.localPosition = new Vector2(-0.065f, -0.005f);
+
     }
 
 

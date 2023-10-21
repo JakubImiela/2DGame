@@ -13,7 +13,6 @@ public class RopeSystem : MonoBehaviour
     [SerializeField] private Transform crosshair;
     [SerializeField] private Transform ropeAttachmentPoint;
     [SerializeField] private LayerMask ropeLayerMask;
-    [SerializeField] private Transform heldItem;
     private SpriteRenderer crosshairSprite;
     private DistanceJoint2D ropeJoint;
     private LineRenderer ropeRenderer;
@@ -86,7 +85,7 @@ public class RopeSystem : MonoBehaviour
                 else
                 {
                     transform.GetComponent<Rigidbody2D>().AddForce(
-                        (ropeHingeAnchor.transform.position - transform.position).normalized * 50f,
+                        (ropeHingeAnchor.transform.position - transform.position) * 5f,
                         ForceMode2D.Force);
                     ropeJoint.enabled = false;
                     playerMovement.isSwinging = false;
@@ -184,7 +183,7 @@ public class RopeSystem : MonoBehaviour
         if (playerMovement.isSwinging)
             ropeRenderer.SetPosition(ropeRenderer.positionCount - 1, ropeAttachmentPoint.position);
         else
-            ropeRenderer.SetPosition(ropeRenderer.positionCount - 1, heldItem.position);
+            ropeRenderer.SetPosition(ropeRenderer.positionCount - 1, transform.position);
 
         ropeHingeAnchor.transform.position = ropePositions.Last();
 
