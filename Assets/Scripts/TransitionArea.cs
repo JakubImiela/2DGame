@@ -21,8 +21,11 @@ public class TransitionArea : MonoBehaviour
             GPS.instance.setCurrentArea(identifier.areaName);
             UI.instance.setAreaName(identifier.areaName.ToString());
         }
-        else if (collision.CompareTag("Enemy"))
-            collision.GetComponent<Swat>().lastArea = this;
+        if (collision.CompareTag("Enemy"))
+        {
+            collision.GetComponent<Swat>().lastArea = identifier;
+            collision.GetComponent<AreaIdentifier>().areaName = identifier.areaName;
+        }
     }
 
  

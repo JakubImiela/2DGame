@@ -10,7 +10,7 @@ public class Ladder : MonoBehaviour
     [SerializeField] private Transform midTransform;
     [SerializeField] private Transform botTransform;
     [SerializeField] private Transform topCollisionTransform;
-    [SerializeField] private BoxCollider2D topCollision = null;
+    public BoxCollider2D topCollision = null;
 
     private void Reset()
     {

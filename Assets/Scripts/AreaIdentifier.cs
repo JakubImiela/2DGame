@@ -5,7 +5,7 @@ using UnityEngine;
 public class AreaIdentifier : MonoBehaviour
 {
     public Transform transportObject;
-    public TransitionArea oppositeExit;
+    public AreaIdentifier oppositeExit;
     public GPS.transitionType transitionType;
     public GPS.area areaName;
 }

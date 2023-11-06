@@ -1,107 +1,163 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using Unity.Burst.CompilerServices;
+using Unity.VisualScripting;
 using UnityEngine;
-using static UnityEditor.Experimental.GraphView.GraphView;
 
 public class Swat : MonoBehaviour
 {
     [SerializeField] private Transform playerTransform;
-    private bool canSeePlayer;
     private Rigidbody2D rigidbodyComponent;
     private Vector2 startingPosition;
-    private float characterSpeed = 2f;
-    private float climingSpeed = 1f;
     public Vector2 facingDirection = Vector2.right;
+
+    public GPS.area currentArea;
+    public Ladder ladder;
+    
+    
+    public List<AreaIdentifier> transitionAreas;
+    public AreaIdentifier currentGoal;
+    public AreaIdentifier lastArea;
+    private GPS.area startingArea;
+    private float[,] dijkstraGraph;
+
+    private bool canSeePlayer;
+    private bool onLadder = false;
+    private bool isChasingPlayer = false;
+
     private float visibilityTimer;
     private const float maxVisibilityTime = 5f;
-    private bool isChasingPlayer = false;
-    public GPS.area currentArea = GPS.area.A;
-    public TransitionArea lastArea;
-    public Ladder ladder;
-    private bool onLadder;
+    private float runningSpeed = 4f;
+    private float walkingSpeed = 2f;
+    private float climingSpeed = 1f;
     private const float defaultGravityScale = 1f;
-    private static float[,] dijkstraGraph;
-    public static AreaIdentifier[] transitionAreas;
 
     void Start()
     {
         rigidbodyComponent = GetComponent<Rigidbody2D>();
         Physics2D.IgnoreCollision(playerTransform.GetComponent<BoxCollider2D>(), GetComponent<BoxCollider2D>());
         startingPosition = transform.position;
-        StartCoroutine(playAfterSecond());
-        dijkstraGraph = fillDjkistraGraph();
-        transitionAreas = GPS.instance.GetComponentsInChildren<AreaIdentifier>();
+        fillTransitionAreas();
+        dijkstraGraph = new float[transitionAreas.Capacity, transitionAreas.Capacity];
+        //testing stuff below - erase later
+        startingArea = transitionAreas[0].areaName;
+        StartCoroutine(getToArea(Dijkstra(0, 4)));
     }
 
     void Update()
      {
-        
-        if (GetComponent<FieldOfView>().canSeePlayer)
-        {
-            
-        }
+
+            //StartCoroutine(getToArea(Dijkstra(0,4, this)));
+            //StartCoroutine(getToArea(transitionAreas[4]));
+          
      }
 
-    private IEnumerator playAfterSecond()
+    private void OnEnable()
     {
-        yield return new WaitForSeconds(2f);
-        StartCoroutine(getToArea(Dijkstra(0, 1, transform.GetComponent<Swat>())));
+        Actions.playerChangedLocation += setGoalArea;
     }
 
+    private void OnDisable()
+    {
+        Actions.playerChangedLocation -= setGoalArea;
+    }
+
+    private void setGoalArea()
+    {
+        ;
+    }
     private IEnumerator getToArea(AreaIdentifier target)
     {
-        yield return null;
-
+        
+        
         if (target.transitionType == GPS.transitionType.Ladder && target.oppositeExit == lastArea)
         {
+            Debug.Log("going on ladder");
+            ladder = target.transportObject.transform.GetComponent<Ladder>();
             rigidbodyComponent.gravityScale = 0;
             rigidbodyComponent.velocity = Vector2.zero;
             rigidbodyComponent.constraints = RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezeRotation;
             transform.position = new Vector2(target.transform.position.x, transform.position.y);
             ladder = target.transportObject.GetComponent<Ladder>();
-            Physics2D.IgnoreCollision(ladder.GetComponent<BoxCollider2D>(), GetComponent<BoxCollider2D>());
+            Physics2D.IgnoreCollision(ladder.topCollision, GetComponent<BoxCollider2D>());
             onLadder = true;
+            if (target.transform.position.y > target.oppositeExit.transform.position.y)
+                climingSpeed = 2f;
+            else climingSpeed = -2f;
         }
 
-        while (lastArea != target.transform.GetComponent<TransitionArea>())
+        Debug.Log("just running");
+
+        while (lastArea != target)
         {
+            yield return new WaitForSeconds(0.2f);
             if (onLadder)
             {
-                rigidbodyComponent.velocity = new Vector2(0, (transform.position - target.transform.position).normalized.y * climingSpeed);
+                rigidbodyComponent.velocity = new Vector2(0, 1f * climingSpeed);
             }
             else 
             {
-                if (transform.position.x < target.transform.position.x && characterSpeed < 0f)
+                if (transform.position.x < target.transform.position.x && runningSpeed < 0f)
                 {
                     turnRight();
                 }
-                if (transform.position.x > target.transform.position.x && characterSpeed > 0f)
+                if (transform.position.x > target.transform.position.x && runningSpeed > 0f)
                 {
                     turnLeft();
                 }
-
-                rigidbodyComponent.velocity = new Vector2(characterSpeed, rigidbodyComponent.velocity.y);
+               
+                rigidbodyComponent.velocity = new Vector2(runningSpeed, rigidbodyComponent.velocity.y);
             }
         }
 
+        Debug.Log("stopped moving");
+
         if (onLadder) getOffLadder();
         StopAllCoroutines();
-        StartCoroutine(idleMovement());
+        if (lastArea != currentGoal)
+        {
+            Debug.Log("ide dalej");
+            int nextSourceIndex = 0;
+            int goalIndex = 0;
+            for (int i = 0; i < transitionAreas.Capacity; i++)
+            {
+                if (transitionAreas[i] == target)
+                    nextSourceIndex = i;
+                if (transitionAreas[i] == currentGoal)
+                    goalIndex = i;
+            }
+            Debug.Log("going from " + transitionAreas[nextSourceIndex] + " to " + transitionAreas[goalIndex]);
+            StartCoroutine(getToArea(Dijkstra(nextSourceIndex, goalIndex)));
+        }
+        else
+        {
+            Debug.Log("wracam na pozycje");
+            if (transitionAreas[0].areaName == startingArea)
+            {
+                Debug.Log("dotarlem do startowej strefy, idle movement");
+                StartCoroutine(idleMovement());
+            }
+            else
+            {
+                Debug.Log("ide dalej");
+                int nextSourceIndex = 0;
+                int goalIndex = 0;
+                for (int i = 0; i < transitionAreas.Capacity; i++)
+                {
+                    if (transitionAreas[i] == target)
+                        nextSourceIndex = i;
+                    if (transitionAreas[i].areaName == startingArea)
+                    {
+                        goalIndex = i;
+                        currentGoal = transitionAreas[i];
+                    }
+                }
+                Debug.Log("going from " + transitionAreas[nextSourceIndex] + " to " + transitionAreas[goalIndex]);
+                StartCoroutine(getToArea(Dijkstra(nextSourceIndex, goalIndex)));
+            }
+            
+        }
     }
-
-    private void getOffLadder()
-    {
-        rigidbodyComponent.gravityScale = defaultGravityScale;
-        rigidbodyComponent.constraints = RigidbodyConstraints2D.FreezeRotation;
-        rigidbodyComponent.velocity = Vector2.zero;
-        Physics2D.IgnoreCollision(ladder.GetComponent<BoxCollider2D>(), GetComponent<BoxCollider2D>(), false);
-        onLadder = false;
-    }
-
 
 
     private IEnumerator idleMovement()
@@ -109,14 +165,14 @@ public class Swat : MonoBehaviour
         while (true)
         {
             yield return new WaitForSeconds(0.2f);
-            if (transform.position.x < startingPosition.x - 2 && characterSpeed < 0f)
+            if (transform.position.x < startingPosition.x - 2 && runningSpeed < 0f)
                 turnRight();
                 
-            if (transform.position.x > startingPosition.x + 2 && characterSpeed > 0f)
+            if (transform.position.x > startingPosition.x + 2 && runningSpeed > 0f)
                 turnLeft();
            
             
-            rigidbodyComponent.velocity = new Vector2(characterSpeed, rigidbodyComponent.velocity.y);
+            rigidbodyComponent.velocity = new Vector2(walkingSpeed, rigidbodyComponent.velocity.y);
         }
     }
 
@@ -140,56 +196,91 @@ public class Swat : MonoBehaviour
     }
 
     
+    public AreaIdentifier Dijkstra(int source, int destination)
+    {
+        int verticesCount = transitionAreas.Capacity;
+        fillDijkstraGraph();
+        float[] distance = new float[verticesCount];
+        bool[] shortestPathTreeSet = new bool[verticesCount];
+        AreaIdentifier[,] paths = new AreaIdentifier[verticesCount, verticesCount];
+
+        
+
+        for (int i = 0; i < verticesCount; ++i)
+        {
+            distance[i] = float.MaxValue;
+            shortestPathTreeSet[i] = false;
+            paths[i, 0] = transitionAreas[source];
+        }
+
+        distance[source] = 0;
+
+        for (int count = 0; count < verticesCount; ++count)
+        {
+
+            int u = MinimumDistance(distance, shortestPathTreeSet, verticesCount);
+            shortestPathTreeSet[u] = true;
+
+            for (int v = 0; v < verticesCount; ++v)
+            {
+                if (!shortestPathTreeSet[v] && Convert.ToBoolean(dijkstraGraph[u, v]) && distance[u] != int.MaxValue && distance[u] + dijkstraGraph[u, v] < distance[v])
+                {
+                    distance[v] = distance[u] + dijkstraGraph[u, v];
+                    for (int i = 1; i < verticesCount; ++i)
+                    {
+                        if (paths[u, i] == null)
+                        {
+                            paths[v, i] = transitionAreas[v];
+                            break;
+                        }
+
+                        paths[v, i] = paths[u, i];
+                        
+                    }
+                    
+                }
+
+            }
+
+
+        }
+        return paths[destination, 1];
+    }
 
     
 
-    private void turnRight()
+    private void fillDijkstraGraph()
     {
-        transform.GetComponent<SpriteRenderer>().flipX = false;
-        characterSpeed = -characterSpeed;
-        facingDirection = Vector2.right;
-    }
-
-    private void turnLeft()
-    {
-        transform.GetComponent<SpriteRenderer>().flipX = true;
-        characterSpeed = -characterSpeed;
-        facingDirection = Vector2.left;
-    }
-
-
-    private float[,] fillDjkistraGraph()
-    {
-        float[,] graph = new float[transitionAreas.Length + 1, transitionAreas.Length + 1];
-        for (int u = 0; u < transitionAreas.Length; u++)
-            for (int v = u; v < transitionAreas.Length; v++)
+        
+        for (int u = 0; u < transitionAreas.Capacity; u++)
+            for (int v = u; v < transitionAreas.Capacity; v++)
             {
-                if (transitionAreas[v].oppositeExit == transitionAreas[u] || transitionAreas[u].areaName == transitionAreas[v].areaName)
+                if (transitionAreas[u].oppositeExit == transitionAreas[v] || transitionAreas[u].areaName == transitionAreas[v].areaName)
                 {
-                    graph[u, v] = Vector2.Distance(transitionAreas[u].transform.position, transitionAreas[v].transform.position);
-                    graph[v, u] = graph[u, v];
+                    dijkstraGraph[u, v] = Vector2.Distance(transitionAreas[u].transform.position, transitionAreas[v].transform.position);
+                    dijkstraGraph[v, u] = dijkstraGraph[u, v];
                 }
                 else
                 {
-                    graph[u, v] = 0f;
-                    graph[v, u] = 0f;
+                    dijkstraGraph[u, v] = 0f;
+                    dijkstraGraph[v, u] = 0f;
                 }
             }
-        return graph;
+        
     }
-    private void addEnemyToGraph()
+
+    private void fillTransitionAreas()
     {
-        for (int u = 0; u < transitionAreas.Length; u++)
-            if (currentArea == transitionAreas[u].areaName)
-            {
-                dijkstraGraph[u, transitionAreas.Length] = Vector2.Distance(transform.position, transitionAreas[u].transform.position);
-                dijkstraGraph[transitionAreas.Length, u] = dijkstraGraph[u, transitionAreas.Length];
-            }
-        dijkstraGraph[transitionAreas.Length, transitionAreas.Length] = 0f;
-
+        AreaIdentifier[] temp = GPS.instance.GetComponentsInChildren<AreaIdentifier>();
+        transitionAreas = new List<AreaIdentifier>(){GetComponent<AreaIdentifier>()};
+        transitionAreas.AddRange(temp);
+        foreach(AreaIdentifier area in transitionAreas)
+        {
+            Debug.Log("transition area - " + area);
+        }
+        
     }
 
-    //Dijkstra start
     public int MinimumDistance(float[] distance, bool[] shortestPathTreeSet, int verticesCount)
     {
         float min = float.MaxValue;
@@ -207,79 +298,28 @@ public class Swat : MonoBehaviour
         return minIndex;
     }
 
-    public AreaIdentifier Dijkstra(int source, int destination, Swat enemy)
+    private void getOffLadder()
     {
-        int verticesCount = transitionAreas.Length + 1;
-        float[,] graph = dijkstraGraph;
-        
-        //add enemy to the graph
-        for (int u = 0; u < verticesCount; u++)
-        {
-            Debug.Log(u + "adding enemy u");
-            if (u > 3)
-            {
-                graph[4, 4] = 0f;
-                break;
-            }
-            if (transitionAreas[u].areaName == enemy.currentArea && u < 4)
-            {
-                graph[u, 4] = Vector2.Distance(enemy.transform.position, transitionAreas[u].transform.position);
-                graph[4, u] = graph[u, 4];
-            }
-            else
-            {
-                graph[u, 4] = 0f;
-                graph[4, u] = 0f;
-            }
-        }
-
-
-        float[] distance = new float[verticesCount];
-        bool[] shortestPathTreeSet = new bool[verticesCount];
-        AreaIdentifier[,] paths = new AreaIdentifier[verticesCount, verticesCount];
-
-
-
-        for (int i = 0; i < verticesCount; ++i)
-        {
-            distance[i] = float.MaxValue;
-            shortestPathTreeSet[i] = false;
-        }
-
-        distance[source] = 0;
-        paths[source, 0] = transitionAreas[source];
-
-
-        for (int count = 0; count < verticesCount - 1; ++count)
-        {
-
-            int u = MinimumDistance(distance, shortestPathTreeSet, verticesCount);
-            shortestPathTreeSet[u] = true;
-
-            for (int v = 0; v < verticesCount; ++v)
-            {
-                if (!shortestPathTreeSet[v] && Convert.ToBoolean(graph[u, v]) && distance[u] != int.MaxValue && distance[u] + graph[u, v] < distance[v])
-                {
-                    distance[v] = distance[u] + graph[u, v];
-                    int i = 0;
-                    while (paths[u, i] != null && i < verticesCount)
-                    {
-                        paths[v, i] = paths[u, i];
-                        i++;
-                    }
-                    paths[v, i] = transitionAreas[v];
-
-
-                }
-
-            }
-
-
-        }
-
-        return paths[destination, 0].transform.GetComponent<AreaIdentifier>();
+        rigidbodyComponent.gravityScale = defaultGravityScale;
+        rigidbodyComponent.constraints = RigidbodyConstraints2D.FreezeRotation;
+        rigidbodyComponent.velocity = Vector2.zero;
+        Physics2D.IgnoreCollision(ladder.topCollision, GetComponent<BoxCollider2D>(), false);
+        onLadder = false;
     }
-    //Dijkstra end
+
+    private void turnRight()
+    {
+        transform.GetComponent<SpriteRenderer>().flipX = false;
+        runningSpeed = -runningSpeed;
+        facingDirection = Vector2.right;
+    }
+
+    private void turnLeft()
+    {
+        transform.GetComponent<SpriteRenderer>().flipX = true;
+        runningSpeed = -runningSpeed;
+        facingDirection = Vector2.left;
+    }
 
 }
 
