@@ -184,7 +184,7 @@ Rigidbody2D:
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: accceb717473c094685377710bb50e6e, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -306,11 +306,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8407740054223046658, guid: c4fe0be46e8209a4483eb312bdaf735c, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -15.52
+      value: -15.507
       objectReference: {fileID: 0}
     - target: {fileID: 8407740054223046658, guid: c4fe0be46e8209a4483eb312bdaf735c, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -1.54
+      value: -1.382
       objectReference: {fileID: 0}
     - target: {fileID: 8407740054223046658, guid: c4fe0be46e8209a4483eb312bdaf735c, type: 3}
       propertyPath: m_LocalPosition.z
@@ -736,7 +736,7 @@ Rigidbody2D:
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: accceb717473c094685377710bb50e6e, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -1287,7 +1287,7 @@ Rigidbody2D:
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: accceb717473c094685377710bb50e6e, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -1526,6 +1526,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 646958230}
     m_Modifications:
+    - target: {fileID: 8407740052471150977, guid: c4fe0be46e8209a4483eb312bdaf735c, type: 3}
+      propertyPath: m_SideArc
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8407740054223046658, guid: c4fe0be46e8209a4483eb312bdaf735c, type: 3}
       propertyPath: m_RootOrder
       value: 3
@@ -1611,7 +1615,7 @@ Transform:
   m_GameObject: {fileID: 372337095}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -12.530001, y: -1.5, z: 0}
+  m_LocalPosition: {x: -12.5, y: -1.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1633,7 +1637,7 @@ Rigidbody2D:
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: accceb717473c094685377710bb50e6e, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -2125,7 +2129,7 @@ Rigidbody2D:
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: accceb717473c094685377710bb50e6e, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -2332,7 +2336,7 @@ Rigidbody2D:
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: accceb717473c094685377710bb50e6e, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -2757,7 +2761,7 @@ Rigidbody2D:
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: accceb717473c094685377710bb50e6e, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -3030,7 +3034,7 @@ Rigidbody2D:
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: accceb717473c094685377710bb50e6e, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -3366,7 +3370,7 @@ Rigidbody2D:
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: accceb717473c094685377710bb50e6e, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -4486,11 +4490,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerTransform: {fileID: 923220057}
   facingDirection: {x: 1, y: 0}
-  currentArea: 0
+  currentArea: 1
   ladder: {fileID: 0}
   transitionAreas: []
-  currentGoal: {fileID: 1410017475}
   lastArea: {fileID: 1401642942}
+  destinationArea: 0
 --- !u!50 &934123818
 Rigidbody2D:
   serializedVersion: 4
@@ -4605,7 +4609,7 @@ Rigidbody2D:
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: accceb717473c094685377710bb50e6e, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -4785,7 +4789,7 @@ Rigidbody2D:
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: accceb717473c094685377710bb50e6e, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -5062,7 +5066,7 @@ Rigidbody2D:
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: accceb717473c094685377710bb50e6e, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -5404,7 +5408,7 @@ Rigidbody2D:
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: accceb717473c094685377710bb50e6e, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -5567,7 +5571,7 @@ Rigidbody2D:
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: accceb717473c094685377710bb50e6e, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -5990,7 +5994,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4320306489727068270, guid: fd376b2a145e52243a246e891a25fb84, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 7.9700003
+      value: 7.55
       objectReference: {fileID: 0}
     - target: {fileID: 4320306489727068270, guid: fd376b2a145e52243a246e891a25fb84, type: 3}
       propertyPath: m_LocalPosition.z
@@ -6238,7 +6242,7 @@ Rigidbody2D:
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: accceb717473c094685377710bb50e6e, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -6907,7 +6911,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4320306489727068270, guid: fd376b2a145e52243a246e891a25fb84, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 7.97
+      value: 7.53
       objectReference: {fileID: 0}
     - target: {fileID: 4320306489727068270, guid: fd376b2a145e52243a246e891a25fb84, type: 3}
       propertyPath: m_LocalPosition.z
@@ -7813,7 +7817,7 @@ Transform:
   m_GameObject: {fileID: 1708399712}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -12.54, y: -3.05, z: 0}
+  m_LocalPosition: {x: -12.54, y: -3.01, z: 0}
   m_LocalScale: {x: 1, y: 1.5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -7981,7 +7985,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4320306489727068270, guid: fd376b2a145e52243a246e891a25fb84, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 2.9399998
+      value: 2.54
       objectReference: {fileID: 0}
     - target: {fileID: 4320306489727068270, guid: fd376b2a145e52243a246e891a25fb84, type: 3}
       propertyPath: m_LocalPosition.z
@@ -8289,7 +8293,7 @@ Rigidbody2D:
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: accceb717473c094685377710bb50e6e, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -8457,7 +8461,7 @@ Rigidbody2D:
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: accceb717473c094685377710bb50e6e, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -9120,7 +9124,7 @@ Rigidbody2D:
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: accceb717473c094685377710bb50e6e, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0

@@ -25,6 +25,7 @@ public class TransitionArea : MonoBehaviour
         {
             collision.GetComponent<Swat>().lastArea = identifier;
             collision.GetComponent<AreaIdentifier>().areaName = identifier.areaName;
+            collision.GetComponent<Swat>().currentArea = identifier.areaName;
         }
     }
 

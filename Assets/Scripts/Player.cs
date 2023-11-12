@@ -113,12 +113,10 @@ public class Player : MonoBehaviour
         if (horizontalInput > 0)
         {
             turnRight();
-            
         }
         if (horizontalInput < 0)
         {
             turnLeft();
-            
         }
 
         if (inventoryOneKeyWasPressed)
@@ -162,7 +160,7 @@ public class Player : MonoBehaviour
                 getOffLadder();
             if (GetComponent<Collider2D>().bounds.max.y < ladder.lowPosition.y && verticalInput < 0.0f)
                 getOffLadder();
-            if (isGrounded() && verticalInput < 0.0f)
+            if (isGrounded() && verticalInput < 0.0f && GetComponent<Collider2D>().bounds.max.y < ladder.topPosition.y)
                 getOffLadder();
             if (jumpKeyWasPressed)
             {
@@ -235,13 +233,15 @@ public class Player : MonoBehaviour
             {
                 if (hit.transform.GetComponent<Ladder>() && onLadder == false)
                 {
+                    if (ladder != null)
+                        Physics2D.IgnoreCollision(GetComponent<Collider2D>(), ladder.topCollision, false);
                     rigidbodyComponent.gravityScale = 0;
                     rigidbodyComponent.velocity = Vector2.zero;
                     rigidbodyComponent.constraints = RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezeRotation;
                     transform.position = new Vector2(hit.transform.position.x, transform.position.y);
                     onLadder = true;
                     ladder = hit.transform.GetComponent<Ladder>();
-                    ladder.disableTopCollision();
+                    Physics2D.IgnoreCollision(GetComponent<Collider2D>(), ladder.topCollision);
                     return;
                 }
             }
@@ -252,7 +252,8 @@ public class Player : MonoBehaviour
         rigidbodyComponent.gravityScale = defaultGravityScale;
         rigidbodyComponent.constraints = RigidbodyConstraints2D.FreezeRotation;
         rigidbodyComponent.velocity = Vector2.zero;
-        ladder.enableTopCollision();
+        if (GetComponent<Collider2D>().bounds.min.y > ladder.topPosition.y)
+        Physics2D.IgnoreCollision(GetComponent<Collider2D>(), ladder.topCollision, false);
         onLadder = false;
         animator.speed = 1;
     }
