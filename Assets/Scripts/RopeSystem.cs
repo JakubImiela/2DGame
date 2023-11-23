@@ -22,10 +22,21 @@ public class RopeSystem : MonoBehaviour
     private Vector3 aimDirection;
     private Dictionary<Vector3, int> wrapPointsLookup = new Dictionary<Vector3, int>();
     private List<Vector3> ropePositions = new List<Vector3>();
-
+    float _ropeMaxCastDistance = 10f;
+    float ropeMaxDistance = 10f;
+    float ropeMinDistance = 5f;
 
     //config
-    private float ropeMaxCastDistance = 10f;
+    private float ropeMaxCastDistance { get { return _ropeMaxCastDistance; }
+        set
+        {
+            if (value < ropeMinDistance)
+                value = ropeMinDistance;
+            if (value > ropeMaxDistance)
+                value = ropeMaxDistance;
+            _ropeMaxCastDistance = value;
+        } 
+    }
 
     void Awake()
     {
@@ -151,6 +162,19 @@ public class RopeSystem : MonoBehaviour
         {
             ResetRope();
         }
+        if (playerMovement.verticalInput > 0)
+        {
+            ropeMaxCastDistance -= 0.005f;
+            distanceSet = false;
+        }
+        if (playerMovement.verticalInput < 0)
+        {
+            ropeMaxCastDistance += 0.005f;
+            distanceSet = false;
+        }
+
+        
+
     }
 
     private void ResetRope()
@@ -165,6 +189,7 @@ public class RopeSystem : MonoBehaviour
         ropeHingeAnchorSprite.enabled = false;
         wrapPointsLookup.Clear();
         crosshairSprite.enabled = true;
+        ropeMaxCastDistance = ropeMaxDistance;
     }
 
     private void UpdateRopePositions()

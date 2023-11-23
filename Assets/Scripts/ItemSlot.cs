@@ -17,14 +17,21 @@ public class ItemSlot : MonoBehaviour
         set
         {
             _item = value;
+
+            if (image == null)
+                image = GetComponent<Image>();
+
             if (_item == null)
             {
                 image.enabled = false;
+
             }
-            else
+            else 
             {
+                
                 image.sprite = _item.itemSprite;
                 image.enabled = true;
+ 
             }
         }
     }
@@ -33,6 +40,7 @@ public class ItemSlot : MonoBehaviour
     {
         if (image == null)
             image = GetComponent<Image>();
+
     }
 
 

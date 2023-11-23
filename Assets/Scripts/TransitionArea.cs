@@ -19,7 +19,7 @@ public class TransitionArea : MonoBehaviour
         if (collision.CompareTag("Player"))
         {
             GPS.instance.setCurrentArea(identifier.areaName);
-            UI.instance.setAreaName(identifier.areaName.ToString());
+            Actions.playerChangedLocation();
         }
         if (collision.CompareTag("Enemy"))
         {

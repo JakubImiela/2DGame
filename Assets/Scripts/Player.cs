@@ -2,6 +2,7 @@ using JetBrains.Annotations;
 using UnityEditor.Search;
 using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 
 public class Player : MonoBehaviour
@@ -31,13 +32,15 @@ public class Player : MonoBehaviour
     //key presses
     private bool jumpKeyWasPressed;
 
-    private float horizontalInput;
-    private float verticalInput;
+    public float horizontalInput { get; private set; }
+    public float verticalInput { get; private set; }
 
     private bool inventoryOneKeyWasPressed;
     private bool inventoryTwoKeyWasPressed;
     private bool inventoryThreeKeyWasPressed;
     private bool inventoryFourKeyWasPressed;
+
+    private bool menuKeyWasPressed;
 
     //config
 
@@ -45,16 +48,18 @@ public class Player : MonoBehaviour
     private const float playerSpeed = 4f;
     private const float playerSwingForce = 2f;
 
-    // Start is called before the first frame update
     void Start()
     {
         rigidbodyComponent = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
     }
 
-    // Update is called once per frame
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            menuKeyWasPressed = true;
+        }
         onground = isGrounded();
         if (verticalInput != 0)
         {
@@ -96,6 +101,11 @@ public class Player : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (menuKeyWasPressed)
+        {
+            menuKeyWasPressed = false;
+            SceneController.loadScene(1);
+        }
         animator.SetFloat("horizontalInputAbs", Mathf.Abs(horizontalInput));
         animator.SetBool("isGrounded", isGrounded());
         animator.SetBool("isSwinging", isSwinging);
@@ -200,7 +210,7 @@ public class Player : MonoBehaviour
 
     private void CheckInteraction()
     {
-        RaycastHit2D[] hits = Physics2D.BoxCastAll(transform.position, new Vector2(0.1f, 1f), 0, Vector2.zero);
+        RaycastHit2D[] hits = Physics2D.BoxCastAll(transform.position, new Vector2(0.2f, 1f), 0, Vector2.zero);
 
         if (hits.Length > 0)
         {

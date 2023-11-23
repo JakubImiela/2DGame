@@ -1,42 +1,49 @@
 using System.Collections.Generic;
+using UnityEditor.PackageManager;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class Inventory : Singleton<Inventory>
 {
-    [SerializeField] private List<Item> items = new();
+    [SerializeField] private List<Item> items;
     [SerializeField] private ItemSlot[] itemSlots;
     [SerializeField] private Item selectedItem = null;
-    [SerializeField] private Transform inventoryBar;
+    [SerializeField] private Transform itemsParent;
     [SerializeField] private RopeSystem RopeSystem;
     private const int maxItemCount = 4;
 
-    private void Start()
+    private void OnValidate()
     {
-        if (inventoryBar != null)
-        itemSlots = inventoryBar.GetComponentsInChildren<ItemSlot>();
+        if (itemsParent != null)
+            itemSlots = itemsParent.GetComponentsInChildren<ItemSlot>();
+
+        updateInventory();
     }
     public bool addItem(Item item)
     {
-        bool itemAdded;
         if (items.Count >= maxItemCount)
         {
             Debug.Log("inventory is full");
-            itemAdded = false;
+            return false;
         }
         else
         {
             items.Add(item);
             updateInventory();
-            itemAdded = true;
+            return true;
         }
-        return itemAdded;
     }
     private void updateInventory()
     {
-        for (int i = 0; i < items.Count; i++)
+        int i = 0;
+
+        for (; i < items.Count && i < itemSlots.Length; i++)
         {
             itemSlots[i].item = items[i];
+        }
+
+        for (; i < itemSlots.Length; ++i)
+        {
+            itemSlots[i].item = null;
         }
 
     }
@@ -46,10 +53,18 @@ public class Inventory : Singleton<Inventory>
         resetSelectionFrames();
         itemSlots[itemSlot].selectionFrame.enabled = true;
         selectedItem = itemSlots[itemSlot].item;
-        if (selectedItem && selectedItem.enableRope == true)
-            RopeSystem.enabled = true;
-        else 
-            RopeSystem.enabled = false;
+        onDeselectRope();
+        if (selectedItem != null)
+        switch (selectedItem.itemType)
+        {
+            case Item.itemTypes.KEY:
+                break;
+            case Item.itemTypes.ROPE:
+                onSelectRope();
+                break;
+            default: break;
+        }
+        
 
     }
 
@@ -64,6 +79,16 @@ public class Inventory : Singleton<Inventory>
     public Item getSelectedItem()
     {
         return selectedItem;
+    }
+
+    private void onSelectRope()
+    {
+        RopeSystem.enabled = true;
+    }
+
+    private void onDeselectRope()
+    {
+        RopeSystem.enabled = false;
     }
 
     

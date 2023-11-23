@@ -25,7 +25,7 @@ public class Openable : Interactable
     {
         if (Inventory.instance.getSelectedItem() == null)
             return;
-        if (Inventory.instance.getSelectedItem().openDoor == false)
+        if (Inventory.instance.getSelectedItem().itemType != Item.itemTypes.KEY)
             return;
 
         if (isOpen)

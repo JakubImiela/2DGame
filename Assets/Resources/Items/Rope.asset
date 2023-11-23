@@ -9,12 +9,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7b070dbf2c5e43d4795c73403b985852, type: 3}
+  m_Script: {fileID: 11500000, guid: a3d1a25584bf5934d8641d828953f6d1, type: 3}
   m_Name: Rope
   m_EditorClassIdentifier: 
-  itemName: Rope
-  itemDescription: Jeronimo!
-  itemCost: 500
-  openDoor: 0
+  itemType: 1
+  itemName: Short Rope
+  itemDescription: Most versitile adventureres tool!
+  itemCost: 50
   itemSprite: {fileID: 21300000, guid: f13c9dfc2078d2f4183ed23bb9ca784c, type: 3}
-  enableRope: 1
+  ropeMaxRange: 20
+  ropeMinRange: 5

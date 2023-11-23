@@ -6,7 +6,6 @@ using UnityEngine;
 public class UI : MonoBehaviour
 {
     [SerializeField] TextMeshProUGUI subtitleText = default;
-    [SerializeField] TextMeshProUGUI currentArea = default;
 
     public static UI instance;
 
@@ -34,8 +33,5 @@ public class UI : MonoBehaviour
         ClearSubtitle();
     }
 
-    public void setAreaName(string areaName)
-    {
-        currentArea.text = new string("Current Area: " + areaName);
-    }
+    
 }
